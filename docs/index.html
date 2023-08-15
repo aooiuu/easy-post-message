@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      html {
+        height: 100%;
+      }
+      .flex {
+        display: flex;
+      }
+      .flex-1 {
+        flex: 1;
+      }
+      .h-full {
+        height: 100%;
+      }
+      .flex-col {
+        flex-direction: column;
+      }
+      .py-50 {
+        padding-top: 50px;
+        padding-bottom: 50px;
+      }
+    </style>
+  </head>
+  <body class="h-full">
+    <div class="flex h-full flex-col">
+      <iframe id="iframe" class="flex-1"> </iframe>
+
+      <div class="py-50">
+        <button onClick="emit()">emit top</button>
+        <button onClick="emitIframe()">emit iframe</button>
+
+        <button onClick="on()">on</button>
+        <button onClick="off()">off</button>
+
+        <button onClick="answer()">answer</button>
+        <button onClick="send()">send</button>
+        <button onClick="send2()">send2</button>
+      </div>
+    </div>
+    <script src="https://unpkg.com/easy-post-message/dist/index.js"></script>
+    <script>
+      // 初始化
+      var iframeIdx = (() => {
+        let idx = 0;
+        let current = window;
+        while (current !== window.top) {
+          current = current.parent;
+          idx++;
+        }
+        return idx;
+      })();
+
+      iframeIdx < 3 &&
+        (iframe.src = window.location.href + '?r=' + Math.random());
+
+      // 使用
+      const pm = new EasyPostMessage();
+
+      function log(...arg) {
+        window.console.log(`%c${iframeIdx}`, 'color: red', ...arg);
+      }
+
+      const callback = (arg) => {
+        log('[on]', arg);
+      };
+
+      function emit() {
+        pm.emit('t1', 'data', window.top);
+      }
+
+      function emitIframe() {
+        pm.emit('t1', 'data', iframe.contentWindow);
+      }
+
+      function on() {
+        pm.on('t1', callback);
+      }
+      function off() {
+        pm.off('t1', callback);
+      }
+
+      async function send() {
+        log('[send]', await pm.send('k1', { k: 1 }, window.top));
+      }
+      async function send2() {
+        log('[send]', await pm.send('k2', { k: 2 }, window.top));
+      }
+
+      function answer() {
+        pm.answer('k1', (data) => {
+          log('[answer] k1', data);
+          return 'answer val k1';
+        });
+
+        pm.answer('k2', async (data) => {
+          log('[answer] k2', data);
+          return new Promise((c) => setTimeout(() => c('[answer] k2'), 1500));
+        });
+      }
+    </script>
+  </body>
+</html>
