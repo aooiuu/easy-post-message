@@ -1,5 +1,8 @@
 # EasyPostMessage
 
+[![npm version][npm-version-src]][npm-version-href]
+[![bundle][bundle-src]][bundle-href]
+
 `postMessage` + `mitt` 支持返回值, 支持自定义 adapter
 
 - 一组和 `mitt` 类似的方法: `emit`、`on`、`off`
@@ -89,3 +92,12 @@ answer(event: Event, callback: (data: any) => void): void;
 ```javascript
 new EasyPostMessage(createAdapter());
 ```
+
+<!-- Badges -->
+
+[npm-version-src]: https://img.shields.io/npm/v/easy-post-message?style=flat&colorA=18181B&colorB=F0DB4F
+[npm-version-href]: https://npmjs.com/package/easy-post-message
+[bundle-src]: https://img.shields.io/bundlephobia/minzip/easy-post-message?style=flat&colorA=18181B&colorB=F0DB4F
+[bundle-href]: https://bundlephobia.com/result?p=easy-post-message
+[jsdocs-src]: https://img.shields.io/badge/jsDocs.io-reference-18181B?style=flat&colorA=18181B&colorB=F0DB4F
+[jsdocs-href]: https://www.jsdocs.io/package/easy-post-message
