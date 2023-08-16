@@ -1,6 +1,6 @@
-import type { IAdapter, IMessage } from './types'
+import type { IAdapter, IMessage } from '../types'
 
-const createAdapter: IAdapter = () => {
+const Adapter: IAdapter = () => {
   return {
 
     /**
@@ -34,4 +34,4 @@ const createAdapter: IAdapter = () => {
   }
 }
 
-export default createAdapter
+export default Adapter

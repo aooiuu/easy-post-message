@@ -1,15 +1,36 @@
 {
   "name": "easy-post-message",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "packageManager": "pnpm@8.6.5",
   "description": "postMessage + mitt 封装, 支持返回值, 支持自定义 adapter",
+  "license": "MIT",
+  "author": "aooiuu",
+  "homepage": "https://github.com/aooiuu/easy-post-message#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aooiuu/easy-post-message"
+  },
+  "bugs": {
+    "url": "https://github.com/aooiuu/easy-post-message/issues"
+  },
+  "keywords": [
+    "postMessage",
+    "iframe",
+    "mitt",
+    "electron"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {
       "types": "./index.d.ts",
       "require": "./dist/index.cjs",
       "import": "./dist/index.mjs"
+    },
+    "./electron-adapter": {
+      "types": "./electron-adapter.d.ts",
+      "require": "./dist/adapter/electron-adapter.cjs",
+      "import": "./dist/adapter/electron-adapter.mjs"
     }
   },
   "main": "dist/index.cjs",

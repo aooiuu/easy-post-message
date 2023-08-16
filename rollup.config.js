@@ -5,11 +5,26 @@ import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import alias from '@rollup/plugin-alias'
 
-const entries = ['src/index.ts']
+const entries = [
+  {
+    path: 'src/index.ts',
+    name: 'EasyPostMessage',
+    format: ['esm', 'cjs', 'umd'],
+  },
+  {
+    path: 'src/adapter/electron-adapter.ts',
+    format: ['esm', 'cjs'],
+  },
+]
 
 const plugins = [
   alias({
-    entries: [{ find: /^node:(.+)$/, replacement: '$1' }],
+    entries: [
+      {
+        find: /^node:(.+)$/,
+        replacement: '$1',
+      },
+    ],
   }),
   resolve({
     preferBuiltins: true,
@@ -17,12 +32,13 @@ const plugins = [
   json(),
   commonjs(),
   esbuild({
-    target: 'node14',
+    target: 'es2015',
+    minify: true,
   }),
 ]
 
 export default [
-  ...entries.map(input => ({
+  ...entries.map(({ path: input, name, format }) => ({
     input,
     output: [
       {
@@ -36,19 +52,26 @@ export default [
       {
         file: input.replace('src/', 'dist/').replace('.ts', '.js'),
         format: 'umd',
-        name: 'EasyPostMessage',
+        name,
       },
-    ],
+    ].filter(o => format.includes(o.format)),
     external: [],
     plugins,
   })),
-  ...entries.map(input => ({
+  ...entries.map(({ path: input }) => ({
     input,
     output: {
-      file: input.replace('src/', '').replace('.ts', '.d.ts'),
+      file: input
+        .replace('src/adapter/', '')
+        .replace('src/', '')
+        .replace('.ts', '.d.ts'),
       format: 'esm',
     },
     external: [],
-    plugins: [dts({ respectExternal: true })],
+    plugins: [
+      dts({
+        respectExternal: true,
+      }),
+    ],
   })),
 ]

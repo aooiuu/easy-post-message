@@ -2,11 +2,13 @@
 
 [![npm version][npm-version-src]][npm-version-href]
 [![bundle][bundle-src]][bundle-href]
+[![JSDocs][jsdocs-src]][jsdocs-href]
 
 `postMessage` + `mitt` 支持返回值, 支持自定义 adapter
 
 - 一组和 `mitt` 类似的方法: `emit`、`on`、`off`
 - 一组 `Promise` 风格传递数据的方法: `send`、`answer`
+- 多端支持: 浏览器、electron、自定义
 
 ## Usage
 
@@ -66,7 +68,7 @@ off(event: Event, callback: (arg: EventData) => void): void;
  * @param {Object} data
  * @param {Window} target 发送对象
  */
-emit(event: Event, data: any, target: Window): void;
+emit(event: Event, data: any, target?: Window | unknown): void;
 
 /**
  * 发送事件, 可以接收参数
@@ -75,7 +77,7 @@ emit(event: Event, data: any, target: Window): void;
  * @param {Window} target 发送对象
  * @returns {Promise}
  */
-send(event: Event, data: any, target: Window): Promise<any>;
+send(event: Event, data: any, target?: Window | unknown): Promise<any>;
 
 /**
  * 监听事件, 可以返回参数
@@ -90,7 +92,37 @@ answer(event: Event, callback: (data: any) => void): void;
 默认 adapter 是基于浏览器的 `window.postMessage`, 你也可以自定义 adapter 用以支持其他平台
 
 ```javascript
-new EasyPostMessage(createAdapter());
+new EasyPostMessage(Adapter);
+```
+
+### Electron
+
+基于 `ipcMain` 和 `ipcRenderer`, main 进程发送消息时需要指定窗口
+
+```javascript
+import EasyPostMessage from 'easy-post-message';
+import Adapter from 'easy-post-message/electron-adapter';
+
+const pm = new EasyPostMessage(Adapter);
+
+// main
+const win = new BrowserWindow(/** */);
+pm.emit('a', data, win);
+pm.on('b', () => {});
+
+pm.send('c', data, win);
+pm.answer('d', () => {
+  return 'xx';
+});
+
+// renderer
+pm.emit('b', data);
+pm.on('a', () => {});
+
+pm.send('d', data);
+pm.answer('c', () => {
+  return 'xx';
+});
 ```
 
 <!-- Badges -->

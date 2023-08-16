@@ -12,13 +12,13 @@ export interface IMessage {
 export interface EventData {
   data: IMessage
   seq?: number
-  source: MessageEventSource | null
+  source: MessageEventSource | null | unknown
 }
 
 export interface IAdapterValue {
-  postMessage: (target: { postMessage: Function }, data: IMessage) => ({})
+  postMessage: (target: any, data: IMessage) => void
 
-  addMessageListener: (callback: (arg: { data: IMessage; source: Window }) => void) => () => void
+  addMessageListener: (callback: (arg: { data: IMessage; source: Window | unknown }) => void) => () => void
 }
 
 export type IAdapter = () => IAdapterValue
